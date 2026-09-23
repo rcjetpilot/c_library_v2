@@ -1,45 +1,47 @@
 #pragma once
 // MESSAGE ASLUAV_STATUS PACKING
 
-#define MAVLINK_MSG_ID_ASLUAV_STATUS 205
+#include <stdint.h>
 
-MAVPACKED(
+#define MAVLINK_MSG_ID_ASLUAV_STATUS 8006
+
+
 typedef struct __mavlink_asluav_status_t {
- float Motor_rpm; /*<  Motor RPM */
- uint8_t LED_status; /*<  Status of the position-indicator LEDs*/
- uint8_t SATCOM_status; /*<  Status of the IRIDIUM satellite communication system*/
- uint8_t Servo_status[8]; /*<  Status vector for up to 8 servos*/
-}) mavlink_asluav_status_t;
+ float Motor_rpm; /*<   Motor RPM */
+ uint8_t LED_status; /*<   Status of the position-indicator LEDs*/
+ uint8_t SATCOM_status; /*<   Status of the IRIDIUM satellite communication system*/
+ uint8_t Servo_status[8]; /*<   Status vector for up to 8 servos*/
+} mavlink_asluav_status_t;
 
 #define MAVLINK_MSG_ID_ASLUAV_STATUS_LEN 14
 #define MAVLINK_MSG_ID_ASLUAV_STATUS_MIN_LEN 14
-#define MAVLINK_MSG_ID_205_LEN 14
-#define MAVLINK_MSG_ID_205_MIN_LEN 14
+#define MAVLINK_MSG_ID_8006_LEN 14
+#define MAVLINK_MSG_ID_8006_MIN_LEN 14
 
 #define MAVLINK_MSG_ID_ASLUAV_STATUS_CRC 97
-#define MAVLINK_MSG_ID_205_CRC 97
+#define MAVLINK_MSG_ID_8006_CRC 97
 
 #define MAVLINK_MSG_ASLUAV_STATUS_FIELD_SERVO_STATUS_LEN 8
 
 #if MAVLINK_COMMAND_24BIT
 #define MAVLINK_MESSAGE_INFO_ASLUAV_STATUS { \
-    205, \
+    8006, \
     "ASLUAV_STATUS", \
     4, \
-    {  { "Motor_rpm", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_asluav_status_t, Motor_rpm) }, \
-         { "LED_status", NULL, MAVLINK_TYPE_UINT8_T, 0, 4, offsetof(mavlink_asluav_status_t, LED_status) }, \
+    {  { "LED_status", NULL, MAVLINK_TYPE_UINT8_T, 0, 4, offsetof(mavlink_asluav_status_t, LED_status) }, \
          { "SATCOM_status", NULL, MAVLINK_TYPE_UINT8_T, 0, 5, offsetof(mavlink_asluav_status_t, SATCOM_status) }, \
          { "Servo_status", NULL, MAVLINK_TYPE_UINT8_T, 8, 6, offsetof(mavlink_asluav_status_t, Servo_status) }, \
+         { "Motor_rpm", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_asluav_status_t, Motor_rpm) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_ASLUAV_STATUS { \
     "ASLUAV_STATUS", \
     4, \
-    {  { "Motor_rpm", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_asluav_status_t, Motor_rpm) }, \
-         { "LED_status", NULL, MAVLINK_TYPE_UINT8_T, 0, 4, offsetof(mavlink_asluav_status_t, LED_status) }, \
+    {  { "LED_status", NULL, MAVLINK_TYPE_UINT8_T, 0, 4, offsetof(mavlink_asluav_status_t, LED_status) }, \
          { "SATCOM_status", NULL, MAVLINK_TYPE_UINT8_T, 0, 5, offsetof(mavlink_asluav_status_t, SATCOM_status) }, \
          { "Servo_status", NULL, MAVLINK_TYPE_UINT8_T, 8, 6, offsetof(mavlink_asluav_status_t, Servo_status) }, \
+         { "Motor_rpm", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_asluav_status_t, Motor_rpm) }, \
          } \
 }
 #endif
@@ -50,10 +52,10 @@ typedef struct __mavlink_asluav_status_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param LED_status  Status of the position-indicator LEDs
- * @param SATCOM_status  Status of the IRIDIUM satellite communication system
- * @param Servo_status  Status vector for up to 8 servos
- * @param Motor_rpm  Motor RPM 
+ * @param LED_status   Status of the position-indicator LEDs
+ * @param SATCOM_status   Status of the IRIDIUM satellite communication system
+ * @param Servo_status   Status vector for up to 8 servos
+ * @param Motor_rpm   Motor RPM 
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_asluav_status_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -80,15 +82,55 @@ static inline uint16_t mavlink_msg_asluav_status_pack(uint8_t system_id, uint8_t
 }
 
 /**
+ * @brief Pack a asluav_status message
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ *
+ * @param LED_status   Status of the position-indicator LEDs
+ * @param SATCOM_status   Status of the IRIDIUM satellite communication system
+ * @param Servo_status   Status vector for up to 8 servos
+ * @param Motor_rpm   Motor RPM 
+ * @return length of the message in bytes (excluding serial stream start sign)
+ */
+static inline uint16_t mavlink_msg_asluav_status_pack_status(uint8_t system_id, uint8_t component_id, mavlink_status_t *_status, mavlink_message_t* msg,
+                               uint8_t LED_status, uint8_t SATCOM_status, const uint8_t *Servo_status, float Motor_rpm)
+{
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    char buf[MAVLINK_MSG_ID_ASLUAV_STATUS_LEN];
+    _mav_put_float(buf, 0, Motor_rpm);
+    _mav_put_uint8_t(buf, 4, LED_status);
+    _mav_put_uint8_t(buf, 5, SATCOM_status);
+    _mav_put_uint8_t_array(buf, 6, Servo_status, 8);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_ASLUAV_STATUS_LEN);
+#else
+    mavlink_asluav_status_t packet;
+    packet.Motor_rpm = Motor_rpm;
+    packet.LED_status = LED_status;
+    packet.SATCOM_status = SATCOM_status;
+    mav_array_memcpy(packet.Servo_status, Servo_status, sizeof(uint8_t)*8);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_ASLUAV_STATUS_LEN);
+#endif
+
+    msg->msgid = MAVLINK_MSG_ID_ASLUAV_STATUS;
+#if MAVLINK_CRC_EXTRA
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_ASLUAV_STATUS_MIN_LEN, MAVLINK_MSG_ID_ASLUAV_STATUS_LEN, MAVLINK_MSG_ID_ASLUAV_STATUS_CRC);
+#else
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_ASLUAV_STATUS_MIN_LEN, MAVLINK_MSG_ID_ASLUAV_STATUS_LEN);
+#endif
+}
+
+/**
  * @brief Pack a asluav_status message on a channel
  * @param system_id ID of this system
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param LED_status  Status of the position-indicator LEDs
- * @param SATCOM_status  Status of the IRIDIUM satellite communication system
- * @param Servo_status  Status vector for up to 8 servos
- * @param Motor_rpm  Motor RPM 
+ * @param LED_status   Status of the position-indicator LEDs
+ * @param SATCOM_status   Status of the IRIDIUM satellite communication system
+ * @param Servo_status   Status vector for up to 8 servos
+ * @param Motor_rpm   Motor RPM 
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_asluav_status_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -143,13 +185,27 @@ static inline uint16_t mavlink_msg_asluav_status_encode_chan(uint8_t system_id, 
 }
 
 /**
+ * @brief Encode a asluav_status struct with provided status structure
+ *
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ * @param asluav_status C-struct to read the message contents from
+ */
+static inline uint16_t mavlink_msg_asluav_status_encode_status(uint8_t system_id, uint8_t component_id, mavlink_status_t* _status, mavlink_message_t* msg, const mavlink_asluav_status_t* asluav_status)
+{
+    return mavlink_msg_asluav_status_pack_status(system_id, component_id, _status, msg,  asluav_status->LED_status, asluav_status->SATCOM_status, asluav_status->Servo_status, asluav_status->Motor_rpm);
+}
+
+/**
  * @brief Send a asluav_status message
  * @param chan MAVLink channel to send the message
  *
- * @param LED_status  Status of the position-indicator LEDs
- * @param SATCOM_status  Status of the IRIDIUM satellite communication system
- * @param Servo_status  Status vector for up to 8 servos
- * @param Motor_rpm  Motor RPM 
+ * @param LED_status   Status of the position-indicator LEDs
+ * @param SATCOM_status   Status of the IRIDIUM satellite communication system
+ * @param Servo_status   Status vector for up to 8 servos
+ * @param Motor_rpm   Motor RPM 
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -188,7 +244,7 @@ static inline void mavlink_msg_asluav_status_send_struct(mavlink_channel_t chan,
 
 #if MAVLINK_MSG_ID_ASLUAV_STATUS_LEN <= MAVLINK_MAX_PAYLOAD_LEN
 /*
-  This varient of _send() can be used to save stack space by re-using
+  This variant of _send() can be used to save stack space by reusing
   memory from the receive buffer.  The caller provides a
   mavlink_message_t which is the size of a full mavlink message. This
   is usually the receive buffer for the channel, and allows a reply to an
@@ -222,7 +278,7 @@ static inline void mavlink_msg_asluav_status_send_buf(mavlink_message_t *msgbuf,
 /**
  * @brief Get field LED_status from asluav_status message
  *
- * @return  Status of the position-indicator LEDs
+ * @return   Status of the position-indicator LEDs
  */
 static inline uint8_t mavlink_msg_asluav_status_get_LED_status(const mavlink_message_t* msg)
 {
@@ -232,7 +288,7 @@ static inline uint8_t mavlink_msg_asluav_status_get_LED_status(const mavlink_mes
 /**
  * @brief Get field SATCOM_status from asluav_status message
  *
- * @return  Status of the IRIDIUM satellite communication system
+ * @return   Status of the IRIDIUM satellite communication system
  */
 static inline uint8_t mavlink_msg_asluav_status_get_SATCOM_status(const mavlink_message_t* msg)
 {
@@ -242,7 +298,7 @@ static inline uint8_t mavlink_msg_asluav_status_get_SATCOM_status(const mavlink_
 /**
  * @brief Get field Servo_status from asluav_status message
  *
- * @return  Status vector for up to 8 servos
+ * @return   Status vector for up to 8 servos
  */
 static inline uint16_t mavlink_msg_asluav_status_get_Servo_status(const mavlink_message_t* msg, uint8_t *Servo_status)
 {
@@ -252,7 +308,7 @@ static inline uint16_t mavlink_msg_asluav_status_get_Servo_status(const mavlink_
 /**
  * @brief Get field Motor_rpm from asluav_status message
  *
- * @return  Motor RPM 
+ * @return   Motor RPM 
  */
 static inline float mavlink_msg_asluav_status_get_Motor_rpm(const mavlink_message_t* msg)
 {

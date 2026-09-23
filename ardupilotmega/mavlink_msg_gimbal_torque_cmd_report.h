@@ -1,16 +1,18 @@
 #pragma once
 // MESSAGE GIMBAL_TORQUE_CMD_REPORT PACKING
 
+#include <stdint.h>
+
 #define MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT 214
 
-MAVPACKED(
+
 typedef struct __mavlink_gimbal_torque_cmd_report_t {
- int16_t rl_torque_cmd; /*< Roll Torque Command*/
- int16_t el_torque_cmd; /*< Elevation Torque Command*/
- int16_t az_torque_cmd; /*< Azimuth Torque Command*/
- uint8_t target_system; /*< System ID*/
- uint8_t target_component; /*< Component ID*/
-}) mavlink_gimbal_torque_cmd_report_t;
+ int16_t rl_torque_cmd; /*<  Roll Torque Command.*/
+ int16_t el_torque_cmd; /*<  Elevation Torque Command.*/
+ int16_t az_torque_cmd; /*<  Azimuth Torque Command.*/
+ uint8_t target_system; /*<  System ID.*/
+ uint8_t target_component; /*<  Component ID.*/
+} mavlink_gimbal_torque_cmd_report_t;
 
 #define MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT_LEN 8
 #define MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT_MIN_LEN 8
@@ -27,22 +29,22 @@ typedef struct __mavlink_gimbal_torque_cmd_report_t {
     214, \
     "GIMBAL_TORQUE_CMD_REPORT", \
     5, \
-    {  { "rl_torque_cmd", NULL, MAVLINK_TYPE_INT16_T, 0, 0, offsetof(mavlink_gimbal_torque_cmd_report_t, rl_torque_cmd) }, \
+    {  { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 6, offsetof(mavlink_gimbal_torque_cmd_report_t, target_system) }, \
+         { "target_component", NULL, MAVLINK_TYPE_UINT8_T, 0, 7, offsetof(mavlink_gimbal_torque_cmd_report_t, target_component) }, \
+         { "rl_torque_cmd", NULL, MAVLINK_TYPE_INT16_T, 0, 0, offsetof(mavlink_gimbal_torque_cmd_report_t, rl_torque_cmd) }, \
          { "el_torque_cmd", NULL, MAVLINK_TYPE_INT16_T, 0, 2, offsetof(mavlink_gimbal_torque_cmd_report_t, el_torque_cmd) }, \
          { "az_torque_cmd", NULL, MAVLINK_TYPE_INT16_T, 0, 4, offsetof(mavlink_gimbal_torque_cmd_report_t, az_torque_cmd) }, \
-         { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 6, offsetof(mavlink_gimbal_torque_cmd_report_t, target_system) }, \
-         { "target_component", NULL, MAVLINK_TYPE_UINT8_T, 0, 7, offsetof(mavlink_gimbal_torque_cmd_report_t, target_component) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_GIMBAL_TORQUE_CMD_REPORT { \
     "GIMBAL_TORQUE_CMD_REPORT", \
     5, \
-    {  { "rl_torque_cmd", NULL, MAVLINK_TYPE_INT16_T, 0, 0, offsetof(mavlink_gimbal_torque_cmd_report_t, rl_torque_cmd) }, \
+    {  { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 6, offsetof(mavlink_gimbal_torque_cmd_report_t, target_system) }, \
+         { "target_component", NULL, MAVLINK_TYPE_UINT8_T, 0, 7, offsetof(mavlink_gimbal_torque_cmd_report_t, target_component) }, \
+         { "rl_torque_cmd", NULL, MAVLINK_TYPE_INT16_T, 0, 0, offsetof(mavlink_gimbal_torque_cmd_report_t, rl_torque_cmd) }, \
          { "el_torque_cmd", NULL, MAVLINK_TYPE_INT16_T, 0, 2, offsetof(mavlink_gimbal_torque_cmd_report_t, el_torque_cmd) }, \
          { "az_torque_cmd", NULL, MAVLINK_TYPE_INT16_T, 0, 4, offsetof(mavlink_gimbal_torque_cmd_report_t, az_torque_cmd) }, \
-         { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 6, offsetof(mavlink_gimbal_torque_cmd_report_t, target_system) }, \
-         { "target_component", NULL, MAVLINK_TYPE_UINT8_T, 0, 7, offsetof(mavlink_gimbal_torque_cmd_report_t, target_component) }, \
          } \
 }
 #endif
@@ -53,11 +55,11 @@ typedef struct __mavlink_gimbal_torque_cmd_report_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param target_system System ID
- * @param target_component Component ID
- * @param rl_torque_cmd Roll Torque Command
- * @param el_torque_cmd Elevation Torque Command
- * @param az_torque_cmd Azimuth Torque Command
+ * @param target_system  System ID.
+ * @param target_component  Component ID.
+ * @param rl_torque_cmd  Roll Torque Command.
+ * @param el_torque_cmd  Elevation Torque Command.
+ * @param az_torque_cmd  Azimuth Torque Command.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_gimbal_torque_cmd_report_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -88,16 +90,61 @@ static inline uint16_t mavlink_msg_gimbal_torque_cmd_report_pack(uint8_t system_
 }
 
 /**
+ * @brief Pack a gimbal_torque_cmd_report message
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ *
+ * @param target_system  System ID.
+ * @param target_component  Component ID.
+ * @param rl_torque_cmd  Roll Torque Command.
+ * @param el_torque_cmd  Elevation Torque Command.
+ * @param az_torque_cmd  Azimuth Torque Command.
+ * @return length of the message in bytes (excluding serial stream start sign)
+ */
+static inline uint16_t mavlink_msg_gimbal_torque_cmd_report_pack_status(uint8_t system_id, uint8_t component_id, mavlink_status_t *_status, mavlink_message_t* msg,
+                               uint8_t target_system, uint8_t target_component, int16_t rl_torque_cmd, int16_t el_torque_cmd, int16_t az_torque_cmd)
+{
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    char buf[MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT_LEN];
+    _mav_put_int16_t(buf, 0, rl_torque_cmd);
+    _mav_put_int16_t(buf, 2, el_torque_cmd);
+    _mav_put_int16_t(buf, 4, az_torque_cmd);
+    _mav_put_uint8_t(buf, 6, target_system);
+    _mav_put_uint8_t(buf, 7, target_component);
+
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT_LEN);
+#else
+    mavlink_gimbal_torque_cmd_report_t packet;
+    packet.rl_torque_cmd = rl_torque_cmd;
+    packet.el_torque_cmd = el_torque_cmd;
+    packet.az_torque_cmd = az_torque_cmd;
+    packet.target_system = target_system;
+    packet.target_component = target_component;
+
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT_LEN);
+#endif
+
+    msg->msgid = MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT;
+#if MAVLINK_CRC_EXTRA
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT_MIN_LEN, MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT_LEN, MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT_CRC);
+#else
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT_MIN_LEN, MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT_LEN);
+#endif
+}
+
+/**
  * @brief Pack a gimbal_torque_cmd_report message on a channel
  * @param system_id ID of this system
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param target_system System ID
- * @param target_component Component ID
- * @param rl_torque_cmd Roll Torque Command
- * @param el_torque_cmd Elevation Torque Command
- * @param az_torque_cmd Azimuth Torque Command
+ * @param target_system  System ID.
+ * @param target_component  Component ID.
+ * @param rl_torque_cmd  Roll Torque Command.
+ * @param el_torque_cmd  Elevation Torque Command.
+ * @param az_torque_cmd  Azimuth Torque Command.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_gimbal_torque_cmd_report_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -156,14 +203,28 @@ static inline uint16_t mavlink_msg_gimbal_torque_cmd_report_encode_chan(uint8_t 
 }
 
 /**
+ * @brief Encode a gimbal_torque_cmd_report struct with provided status structure
+ *
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ * @param gimbal_torque_cmd_report C-struct to read the message contents from
+ */
+static inline uint16_t mavlink_msg_gimbal_torque_cmd_report_encode_status(uint8_t system_id, uint8_t component_id, mavlink_status_t* _status, mavlink_message_t* msg, const mavlink_gimbal_torque_cmd_report_t* gimbal_torque_cmd_report)
+{
+    return mavlink_msg_gimbal_torque_cmd_report_pack_status(system_id, component_id, _status, msg,  gimbal_torque_cmd_report->target_system, gimbal_torque_cmd_report->target_component, gimbal_torque_cmd_report->rl_torque_cmd, gimbal_torque_cmd_report->el_torque_cmd, gimbal_torque_cmd_report->az_torque_cmd);
+}
+
+/**
  * @brief Send a gimbal_torque_cmd_report message
  * @param chan MAVLink channel to send the message
  *
- * @param target_system System ID
- * @param target_component Component ID
- * @param rl_torque_cmd Roll Torque Command
- * @param el_torque_cmd Elevation Torque Command
- * @param az_torque_cmd Azimuth Torque Command
+ * @param target_system  System ID.
+ * @param target_component  Component ID.
+ * @param rl_torque_cmd  Roll Torque Command.
+ * @param el_torque_cmd  Elevation Torque Command.
+ * @param az_torque_cmd  Azimuth Torque Command.
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -206,7 +267,7 @@ static inline void mavlink_msg_gimbal_torque_cmd_report_send_struct(mavlink_chan
 
 #if MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT_LEN <= MAVLINK_MAX_PAYLOAD_LEN
 /*
-  This varient of _send() can be used to save stack space by re-using
+  This variant of _send() can be used to save stack space by reusing
   memory from the receive buffer.  The caller provides a
   mavlink_message_t which is the size of a full mavlink message. This
   is usually the receive buffer for the channel, and allows a reply to an
@@ -244,7 +305,7 @@ static inline void mavlink_msg_gimbal_torque_cmd_report_send_buf(mavlink_message
 /**
  * @brief Get field target_system from gimbal_torque_cmd_report message
  *
- * @return System ID
+ * @return  System ID.
  */
 static inline uint8_t mavlink_msg_gimbal_torque_cmd_report_get_target_system(const mavlink_message_t* msg)
 {
@@ -254,7 +315,7 @@ static inline uint8_t mavlink_msg_gimbal_torque_cmd_report_get_target_system(con
 /**
  * @brief Get field target_component from gimbal_torque_cmd_report message
  *
- * @return Component ID
+ * @return  Component ID.
  */
 static inline uint8_t mavlink_msg_gimbal_torque_cmd_report_get_target_component(const mavlink_message_t* msg)
 {
@@ -264,7 +325,7 @@ static inline uint8_t mavlink_msg_gimbal_torque_cmd_report_get_target_component(
 /**
  * @brief Get field rl_torque_cmd from gimbal_torque_cmd_report message
  *
- * @return Roll Torque Command
+ * @return  Roll Torque Command.
  */
 static inline int16_t mavlink_msg_gimbal_torque_cmd_report_get_rl_torque_cmd(const mavlink_message_t* msg)
 {
@@ -274,7 +335,7 @@ static inline int16_t mavlink_msg_gimbal_torque_cmd_report_get_rl_torque_cmd(con
 /**
  * @brief Get field el_torque_cmd from gimbal_torque_cmd_report message
  *
- * @return Elevation Torque Command
+ * @return  Elevation Torque Command.
  */
 static inline int16_t mavlink_msg_gimbal_torque_cmd_report_get_el_torque_cmd(const mavlink_message_t* msg)
 {
@@ -284,7 +345,7 @@ static inline int16_t mavlink_msg_gimbal_torque_cmd_report_get_el_torque_cmd(con
 /**
  * @brief Get field az_torque_cmd from gimbal_torque_cmd_report message
  *
- * @return Azimuth Torque Command
+ * @return  Azimuth Torque Command.
  */
 static inline int16_t mavlink_msg_gimbal_torque_cmd_report_get_az_torque_cmd(const mavlink_message_t* msg)
 {

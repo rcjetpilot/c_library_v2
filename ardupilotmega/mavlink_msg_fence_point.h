@@ -1,17 +1,19 @@
 #pragma once
 // MESSAGE FENCE_POINT PACKING
 
+#include <stdint.h>
+
 #define MAVLINK_MSG_ID_FENCE_POINT 160
 
-MAVPACKED(
+
 typedef struct __mavlink_fence_point_t {
- float lat; /*< Latitude of point*/
- float lng; /*< Longitude of point*/
- uint8_t target_system; /*< System ID*/
- uint8_t target_component; /*< Component ID*/
- uint8_t idx; /*< point index (first point is 1, 0 is for return point)*/
- uint8_t count; /*< total number of points (for sanity checking)*/
-}) mavlink_fence_point_t;
+ float lat; /*< [deg] Latitude of point.*/
+ float lng; /*< [deg] Longitude of point.*/
+ uint8_t target_system; /*<  System ID.*/
+ uint8_t target_component; /*<  Component ID.*/
+ uint8_t idx; /*<  Point index (first point is 1, 0 is for return point).*/
+ uint8_t count; /*<  Total number of points (for sanity checking).*/
+} mavlink_fence_point_t;
 
 #define MAVLINK_MSG_ID_FENCE_POINT_LEN 12
 #define MAVLINK_MSG_ID_FENCE_POINT_MIN_LEN 12
@@ -28,24 +30,24 @@ typedef struct __mavlink_fence_point_t {
     160, \
     "FENCE_POINT", \
     6, \
-    {  { "lat", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_fence_point_t, lat) }, \
-         { "lng", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_fence_point_t, lng) }, \
-         { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 8, offsetof(mavlink_fence_point_t, target_system) }, \
+    {  { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 8, offsetof(mavlink_fence_point_t, target_system) }, \
          { "target_component", NULL, MAVLINK_TYPE_UINT8_T, 0, 9, offsetof(mavlink_fence_point_t, target_component) }, \
          { "idx", NULL, MAVLINK_TYPE_UINT8_T, 0, 10, offsetof(mavlink_fence_point_t, idx) }, \
          { "count", NULL, MAVLINK_TYPE_UINT8_T, 0, 11, offsetof(mavlink_fence_point_t, count) }, \
+         { "lat", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_fence_point_t, lat) }, \
+         { "lng", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_fence_point_t, lng) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_FENCE_POINT { \
     "FENCE_POINT", \
     6, \
-    {  { "lat", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_fence_point_t, lat) }, \
-         { "lng", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_fence_point_t, lng) }, \
-         { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 8, offsetof(mavlink_fence_point_t, target_system) }, \
+    {  { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 8, offsetof(mavlink_fence_point_t, target_system) }, \
          { "target_component", NULL, MAVLINK_TYPE_UINT8_T, 0, 9, offsetof(mavlink_fence_point_t, target_component) }, \
          { "idx", NULL, MAVLINK_TYPE_UINT8_T, 0, 10, offsetof(mavlink_fence_point_t, idx) }, \
          { "count", NULL, MAVLINK_TYPE_UINT8_T, 0, 11, offsetof(mavlink_fence_point_t, count) }, \
+         { "lat", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_fence_point_t, lat) }, \
+         { "lng", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_fence_point_t, lng) }, \
          } \
 }
 #endif
@@ -56,12 +58,12 @@ typedef struct __mavlink_fence_point_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param target_system System ID
- * @param target_component Component ID
- * @param idx point index (first point is 1, 0 is for return point)
- * @param count total number of points (for sanity checking)
- * @param lat Latitude of point
- * @param lng Longitude of point
+ * @param target_system  System ID.
+ * @param target_component  Component ID.
+ * @param idx  Point index (first point is 1, 0 is for return point).
+ * @param count  Total number of points (for sanity checking).
+ * @param lat [deg] Latitude of point.
+ * @param lng [deg] Longitude of point.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_fence_point_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -94,17 +96,65 @@ static inline uint16_t mavlink_msg_fence_point_pack(uint8_t system_id, uint8_t c
 }
 
 /**
+ * @brief Pack a fence_point message
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ *
+ * @param target_system  System ID.
+ * @param target_component  Component ID.
+ * @param idx  Point index (first point is 1, 0 is for return point).
+ * @param count  Total number of points (for sanity checking).
+ * @param lat [deg] Latitude of point.
+ * @param lng [deg] Longitude of point.
+ * @return length of the message in bytes (excluding serial stream start sign)
+ */
+static inline uint16_t mavlink_msg_fence_point_pack_status(uint8_t system_id, uint8_t component_id, mavlink_status_t *_status, mavlink_message_t* msg,
+                               uint8_t target_system, uint8_t target_component, uint8_t idx, uint8_t count, float lat, float lng)
+{
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    char buf[MAVLINK_MSG_ID_FENCE_POINT_LEN];
+    _mav_put_float(buf, 0, lat);
+    _mav_put_float(buf, 4, lng);
+    _mav_put_uint8_t(buf, 8, target_system);
+    _mav_put_uint8_t(buf, 9, target_component);
+    _mav_put_uint8_t(buf, 10, idx);
+    _mav_put_uint8_t(buf, 11, count);
+
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_FENCE_POINT_LEN);
+#else
+    mavlink_fence_point_t packet;
+    packet.lat = lat;
+    packet.lng = lng;
+    packet.target_system = target_system;
+    packet.target_component = target_component;
+    packet.idx = idx;
+    packet.count = count;
+
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_FENCE_POINT_LEN);
+#endif
+
+    msg->msgid = MAVLINK_MSG_ID_FENCE_POINT;
+#if MAVLINK_CRC_EXTRA
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_FENCE_POINT_MIN_LEN, MAVLINK_MSG_ID_FENCE_POINT_LEN, MAVLINK_MSG_ID_FENCE_POINT_CRC);
+#else
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_FENCE_POINT_MIN_LEN, MAVLINK_MSG_ID_FENCE_POINT_LEN);
+#endif
+}
+
+/**
  * @brief Pack a fence_point message on a channel
  * @param system_id ID of this system
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param target_system System ID
- * @param target_component Component ID
- * @param idx point index (first point is 1, 0 is for return point)
- * @param count total number of points (for sanity checking)
- * @param lat Latitude of point
- * @param lng Longitude of point
+ * @param target_system  System ID.
+ * @param target_component  Component ID.
+ * @param idx  Point index (first point is 1, 0 is for return point).
+ * @param count  Total number of points (for sanity checking).
+ * @param lat [deg] Latitude of point.
+ * @param lng [deg] Longitude of point.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_fence_point_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -165,15 +215,29 @@ static inline uint16_t mavlink_msg_fence_point_encode_chan(uint8_t system_id, ui
 }
 
 /**
+ * @brief Encode a fence_point struct with provided status structure
+ *
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ * @param fence_point C-struct to read the message contents from
+ */
+static inline uint16_t mavlink_msg_fence_point_encode_status(uint8_t system_id, uint8_t component_id, mavlink_status_t* _status, mavlink_message_t* msg, const mavlink_fence_point_t* fence_point)
+{
+    return mavlink_msg_fence_point_pack_status(system_id, component_id, _status, msg,  fence_point->target_system, fence_point->target_component, fence_point->idx, fence_point->count, fence_point->lat, fence_point->lng);
+}
+
+/**
  * @brief Send a fence_point message
  * @param chan MAVLink channel to send the message
  *
- * @param target_system System ID
- * @param target_component Component ID
- * @param idx point index (first point is 1, 0 is for return point)
- * @param count total number of points (for sanity checking)
- * @param lat Latitude of point
- * @param lng Longitude of point
+ * @param target_system  System ID.
+ * @param target_component  Component ID.
+ * @param idx  Point index (first point is 1, 0 is for return point).
+ * @param count  Total number of points (for sanity checking).
+ * @param lat [deg] Latitude of point.
+ * @param lng [deg] Longitude of point.
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -218,7 +282,7 @@ static inline void mavlink_msg_fence_point_send_struct(mavlink_channel_t chan, c
 
 #if MAVLINK_MSG_ID_FENCE_POINT_LEN <= MAVLINK_MAX_PAYLOAD_LEN
 /*
-  This varient of _send() can be used to save stack space by re-using
+  This variant of _send() can be used to save stack space by reusing
   memory from the receive buffer.  The caller provides a
   mavlink_message_t which is the size of a full mavlink message. This
   is usually the receive buffer for the channel, and allows a reply to an
@@ -258,7 +322,7 @@ static inline void mavlink_msg_fence_point_send_buf(mavlink_message_t *msgbuf, m
 /**
  * @brief Get field target_system from fence_point message
  *
- * @return System ID
+ * @return  System ID.
  */
 static inline uint8_t mavlink_msg_fence_point_get_target_system(const mavlink_message_t* msg)
 {
@@ -268,7 +332,7 @@ static inline uint8_t mavlink_msg_fence_point_get_target_system(const mavlink_me
 /**
  * @brief Get field target_component from fence_point message
  *
- * @return Component ID
+ * @return  Component ID.
  */
 static inline uint8_t mavlink_msg_fence_point_get_target_component(const mavlink_message_t* msg)
 {
@@ -278,7 +342,7 @@ static inline uint8_t mavlink_msg_fence_point_get_target_component(const mavlink
 /**
  * @brief Get field idx from fence_point message
  *
- * @return point index (first point is 1, 0 is for return point)
+ * @return  Point index (first point is 1, 0 is for return point).
  */
 static inline uint8_t mavlink_msg_fence_point_get_idx(const mavlink_message_t* msg)
 {
@@ -288,7 +352,7 @@ static inline uint8_t mavlink_msg_fence_point_get_idx(const mavlink_message_t* m
 /**
  * @brief Get field count from fence_point message
  *
- * @return total number of points (for sanity checking)
+ * @return  Total number of points (for sanity checking).
  */
 static inline uint8_t mavlink_msg_fence_point_get_count(const mavlink_message_t* msg)
 {
@@ -298,7 +362,7 @@ static inline uint8_t mavlink_msg_fence_point_get_count(const mavlink_message_t*
 /**
  * @brief Get field lat from fence_point message
  *
- * @return Latitude of point
+ * @return [deg] Latitude of point.
  */
 static inline float mavlink_msg_fence_point_get_lat(const mavlink_message_t* msg)
 {
@@ -308,7 +372,7 @@ static inline float mavlink_msg_fence_point_get_lat(const mavlink_message_t* msg
 /**
  * @brief Get field lng from fence_point message
  *
- * @return Longitude of point
+ * @return [deg] Longitude of point.
  */
 static inline float mavlink_msg_fence_point_get_lng(const mavlink_message_t* msg)
 {

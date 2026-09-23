@@ -1,15 +1,17 @@
 #pragma once
 // MESSAGE FILE_TRANSFER_PROTOCOL PACKING
 
+#include <stdint.h>
+
 #define MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL 110
 
-MAVPACKED(
+
 typedef struct __mavlink_file_transfer_protocol_t {
- uint8_t target_network; /*< Network ID (0 for broadcast)*/
- uint8_t target_system; /*< System ID (0 for broadcast)*/
- uint8_t target_component; /*< Component ID (0 for broadcast)*/
- uint8_t payload[251]; /*< Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields.  The entire content of this block is opaque unless you understand any the encoding message_type.  The particular encoding used can be extension specific and might not always be documented as part of the mavlink specification.*/
-}) mavlink_file_transfer_protocol_t;
+ uint8_t target_network; /*<  Network ID (0 for broadcast)*/
+ uint8_t target_system; /*<  System ID (0 for broadcast)*/
+ uint8_t target_component; /*<  Component ID (0 for broadcast)*/
+ uint8_t payload[251]; /*<  Variable length payload. The content/format of this block is defined in https://mavlink.io/en/services/ftp.html. The length is defined by the remaining message length when subtracting the header and other fields. See also MAV_FTP_OPCODE and MAV_FTP_ERR.*/
+} mavlink_file_transfer_protocol_t;
 
 #define MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL_LEN 254
 #define MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL_MIN_LEN 254
@@ -50,10 +52,10 @@ typedef struct __mavlink_file_transfer_protocol_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param target_network Network ID (0 for broadcast)
- * @param target_system System ID (0 for broadcast)
- * @param target_component Component ID (0 for broadcast)
- * @param payload Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields.  The entire content of this block is opaque unless you understand any the encoding message_type.  The particular encoding used can be extension specific and might not always be documented as part of the mavlink specification.
+ * @param target_network  Network ID (0 for broadcast)
+ * @param target_system  System ID (0 for broadcast)
+ * @param target_component  Component ID (0 for broadcast)
+ * @param payload  Variable length payload. The content/format of this block is defined in https://mavlink.io/en/services/ftp.html. The length is defined by the remaining message length when subtracting the header and other fields. See also MAV_FTP_OPCODE and MAV_FTP_ERR.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_file_transfer_protocol_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -80,15 +82,55 @@ static inline uint16_t mavlink_msg_file_transfer_protocol_pack(uint8_t system_id
 }
 
 /**
+ * @brief Pack a file_transfer_protocol message
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ *
+ * @param target_network  Network ID (0 for broadcast)
+ * @param target_system  System ID (0 for broadcast)
+ * @param target_component  Component ID (0 for broadcast)
+ * @param payload  Variable length payload. The content/format of this block is defined in https://mavlink.io/en/services/ftp.html. The length is defined by the remaining message length when subtracting the header and other fields. See also MAV_FTP_OPCODE and MAV_FTP_ERR.
+ * @return length of the message in bytes (excluding serial stream start sign)
+ */
+static inline uint16_t mavlink_msg_file_transfer_protocol_pack_status(uint8_t system_id, uint8_t component_id, mavlink_status_t *_status, mavlink_message_t* msg,
+                               uint8_t target_network, uint8_t target_system, uint8_t target_component, const uint8_t *payload)
+{
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    char buf[MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL_LEN];
+    _mav_put_uint8_t(buf, 0, target_network);
+    _mav_put_uint8_t(buf, 1, target_system);
+    _mav_put_uint8_t(buf, 2, target_component);
+    _mav_put_uint8_t_array(buf, 3, payload, 251);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL_LEN);
+#else
+    mavlink_file_transfer_protocol_t packet;
+    packet.target_network = target_network;
+    packet.target_system = target_system;
+    packet.target_component = target_component;
+    mav_array_memcpy(packet.payload, payload, sizeof(uint8_t)*251);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL_LEN);
+#endif
+
+    msg->msgid = MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL;
+#if MAVLINK_CRC_EXTRA
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL_MIN_LEN, MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL_LEN, MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL_CRC);
+#else
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL_MIN_LEN, MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL_LEN);
+#endif
+}
+
+/**
  * @brief Pack a file_transfer_protocol message on a channel
  * @param system_id ID of this system
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param target_network Network ID (0 for broadcast)
- * @param target_system System ID (0 for broadcast)
- * @param target_component Component ID (0 for broadcast)
- * @param payload Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields.  The entire content of this block is opaque unless you understand any the encoding message_type.  The particular encoding used can be extension specific and might not always be documented as part of the mavlink specification.
+ * @param target_network  Network ID (0 for broadcast)
+ * @param target_system  System ID (0 for broadcast)
+ * @param target_component  Component ID (0 for broadcast)
+ * @param payload  Variable length payload. The content/format of this block is defined in https://mavlink.io/en/services/ftp.html. The length is defined by the remaining message length when subtracting the header and other fields. See also MAV_FTP_OPCODE and MAV_FTP_ERR.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_file_transfer_protocol_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -143,13 +185,27 @@ static inline uint16_t mavlink_msg_file_transfer_protocol_encode_chan(uint8_t sy
 }
 
 /**
+ * @brief Encode a file_transfer_protocol struct with provided status structure
+ *
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ * @param file_transfer_protocol C-struct to read the message contents from
+ */
+static inline uint16_t mavlink_msg_file_transfer_protocol_encode_status(uint8_t system_id, uint8_t component_id, mavlink_status_t* _status, mavlink_message_t* msg, const mavlink_file_transfer_protocol_t* file_transfer_protocol)
+{
+    return mavlink_msg_file_transfer_protocol_pack_status(system_id, component_id, _status, msg,  file_transfer_protocol->target_network, file_transfer_protocol->target_system, file_transfer_protocol->target_component, file_transfer_protocol->payload);
+}
+
+/**
  * @brief Send a file_transfer_protocol message
  * @param chan MAVLink channel to send the message
  *
- * @param target_network Network ID (0 for broadcast)
- * @param target_system System ID (0 for broadcast)
- * @param target_component Component ID (0 for broadcast)
- * @param payload Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields.  The entire content of this block is opaque unless you understand any the encoding message_type.  The particular encoding used can be extension specific and might not always be documented as part of the mavlink specification.
+ * @param target_network  Network ID (0 for broadcast)
+ * @param target_system  System ID (0 for broadcast)
+ * @param target_component  Component ID (0 for broadcast)
+ * @param payload  Variable length payload. The content/format of this block is defined in https://mavlink.io/en/services/ftp.html. The length is defined by the remaining message length when subtracting the header and other fields. See also MAV_FTP_OPCODE and MAV_FTP_ERR.
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -188,7 +244,7 @@ static inline void mavlink_msg_file_transfer_protocol_send_struct(mavlink_channe
 
 #if MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL_LEN <= MAVLINK_MAX_PAYLOAD_LEN
 /*
-  This varient of _send() can be used to save stack space by re-using
+  This variant of _send() can be used to save stack space by reusing
   memory from the receive buffer.  The caller provides a
   mavlink_message_t which is the size of a full mavlink message. This
   is usually the receive buffer for the channel, and allows a reply to an
@@ -222,7 +278,7 @@ static inline void mavlink_msg_file_transfer_protocol_send_buf(mavlink_message_t
 /**
  * @brief Get field target_network from file_transfer_protocol message
  *
- * @return Network ID (0 for broadcast)
+ * @return  Network ID (0 for broadcast)
  */
 static inline uint8_t mavlink_msg_file_transfer_protocol_get_target_network(const mavlink_message_t* msg)
 {
@@ -232,7 +288,7 @@ static inline uint8_t mavlink_msg_file_transfer_protocol_get_target_network(cons
 /**
  * @brief Get field target_system from file_transfer_protocol message
  *
- * @return System ID (0 for broadcast)
+ * @return  System ID (0 for broadcast)
  */
 static inline uint8_t mavlink_msg_file_transfer_protocol_get_target_system(const mavlink_message_t* msg)
 {
@@ -242,7 +298,7 @@ static inline uint8_t mavlink_msg_file_transfer_protocol_get_target_system(const
 /**
  * @brief Get field target_component from file_transfer_protocol message
  *
- * @return Component ID (0 for broadcast)
+ * @return  Component ID (0 for broadcast)
  */
 static inline uint8_t mavlink_msg_file_transfer_protocol_get_target_component(const mavlink_message_t* msg)
 {
@@ -252,7 +308,7 @@ static inline uint8_t mavlink_msg_file_transfer_protocol_get_target_component(co
 /**
  * @brief Get field payload from file_transfer_protocol message
  *
- * @return Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields.  The entire content of this block is opaque unless you understand any the encoding message_type.  The particular encoding used can be extension specific and might not always be documented as part of the mavlink specification.
+ * @return  Variable length payload. The content/format of this block is defined in https://mavlink.io/en/services/ftp.html. The length is defined by the remaining message length when subtracting the header and other fields. See also MAV_FTP_OPCODE and MAV_FTP_ERR.
  */
 static inline uint16_t mavlink_msg_file_transfer_protocol_get_payload(const mavlink_message_t* msg, uint8_t *payload)
 {

@@ -1,14 +1,16 @@
 #pragma once
 // MESSAGE DATA64 PACKING
 
+#include <stdint.h>
+
 #define MAVLINK_MSG_ID_DATA64 171
 
-MAVPACKED(
+
 typedef struct __mavlink_data64_t {
- uint8_t type; /*< data type*/
- uint8_t len; /*< data length*/
- uint8_t data[64]; /*< raw data*/
-}) mavlink_data64_t;
+ uint8_t type; /*<  Data type.*/
+ uint8_t len; /*< [bytes] Data length.*/
+ uint8_t data[64]; /*<  Raw data.*/
+} mavlink_data64_t;
 
 #define MAVLINK_MSG_ID_DATA64_LEN 66
 #define MAVLINK_MSG_ID_DATA64_MIN_LEN 66
@@ -47,9 +49,9 @@ typedef struct __mavlink_data64_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param type data type
- * @param len data length
- * @param data raw data
+ * @param type  Data type.
+ * @param len [bytes] Data length.
+ * @param data  Raw data.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_data64_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -74,14 +76,51 @@ static inline uint16_t mavlink_msg_data64_pack(uint8_t system_id, uint8_t compon
 }
 
 /**
+ * @brief Pack a data64 message
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ *
+ * @param type  Data type.
+ * @param len [bytes] Data length.
+ * @param data  Raw data.
+ * @return length of the message in bytes (excluding serial stream start sign)
+ */
+static inline uint16_t mavlink_msg_data64_pack_status(uint8_t system_id, uint8_t component_id, mavlink_status_t *_status, mavlink_message_t* msg,
+                               uint8_t type, uint8_t len, const uint8_t *data)
+{
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    char buf[MAVLINK_MSG_ID_DATA64_LEN];
+    _mav_put_uint8_t(buf, 0, type);
+    _mav_put_uint8_t(buf, 1, len);
+    _mav_put_uint8_t_array(buf, 2, data, 64);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_DATA64_LEN);
+#else
+    mavlink_data64_t packet;
+    packet.type = type;
+    packet.len = len;
+    mav_array_memcpy(packet.data, data, sizeof(uint8_t)*64);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_DATA64_LEN);
+#endif
+
+    msg->msgid = MAVLINK_MSG_ID_DATA64;
+#if MAVLINK_CRC_EXTRA
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_DATA64_MIN_LEN, MAVLINK_MSG_ID_DATA64_LEN, MAVLINK_MSG_ID_DATA64_CRC);
+#else
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_DATA64_MIN_LEN, MAVLINK_MSG_ID_DATA64_LEN);
+#endif
+}
+
+/**
  * @brief Pack a data64 message on a channel
  * @param system_id ID of this system
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param type data type
- * @param len data length
- * @param data raw data
+ * @param type  Data type.
+ * @param len [bytes] Data length.
+ * @param data  Raw data.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_data64_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -134,12 +173,26 @@ static inline uint16_t mavlink_msg_data64_encode_chan(uint8_t system_id, uint8_t
 }
 
 /**
+ * @brief Encode a data64 struct with provided status structure
+ *
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ * @param data64 C-struct to read the message contents from
+ */
+static inline uint16_t mavlink_msg_data64_encode_status(uint8_t system_id, uint8_t component_id, mavlink_status_t* _status, mavlink_message_t* msg, const mavlink_data64_t* data64)
+{
+    return mavlink_msg_data64_pack_status(system_id, component_id, _status, msg,  data64->type, data64->len, data64->data);
+}
+
+/**
  * @brief Send a data64 message
  * @param chan MAVLink channel to send the message
  *
- * @param type data type
- * @param len data length
- * @param data raw data
+ * @param type  Data type.
+ * @param len [bytes] Data length.
+ * @param data  Raw data.
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -176,7 +229,7 @@ static inline void mavlink_msg_data64_send_struct(mavlink_channel_t chan, const 
 
 #if MAVLINK_MSG_ID_DATA64_LEN <= MAVLINK_MAX_PAYLOAD_LEN
 /*
-  This varient of _send() can be used to save stack space by re-using
+  This variant of _send() can be used to save stack space by reusing
   memory from the receive buffer.  The caller provides a
   mavlink_message_t which is the size of a full mavlink message. This
   is usually the receive buffer for the channel, and allows a reply to an
@@ -208,7 +261,7 @@ static inline void mavlink_msg_data64_send_buf(mavlink_message_t *msgbuf, mavlin
 /**
  * @brief Get field type from data64 message
  *
- * @return data type
+ * @return  Data type.
  */
 static inline uint8_t mavlink_msg_data64_get_type(const mavlink_message_t* msg)
 {
@@ -218,7 +271,7 @@ static inline uint8_t mavlink_msg_data64_get_type(const mavlink_message_t* msg)
 /**
  * @brief Get field len from data64 message
  *
- * @return data length
+ * @return [bytes] Data length.
  */
 static inline uint8_t mavlink_msg_data64_get_len(const mavlink_message_t* msg)
 {
@@ -228,7 +281,7 @@ static inline uint8_t mavlink_msg_data64_get_len(const mavlink_message_t* msg)
 /**
  * @brief Get field data from data64 message
  *
- * @return raw data
+ * @return  Raw data.
  */
 static inline uint16_t mavlink_msg_data64_get_data(const mavlink_message_t* msg, uint8_t *data)
 {

@@ -1,13 +1,15 @@
 #pragma once
 // MESSAGE RANGEFINDER PACKING
 
+#include <stdint.h>
+
 #define MAVLINK_MSG_ID_RANGEFINDER 173
 
-MAVPACKED(
+
 typedef struct __mavlink_rangefinder_t {
- float distance; /*< distance in meters*/
- float voltage; /*< raw voltage if available, zero otherwise*/
-}) mavlink_rangefinder_t;
+ float distance; /*< [m] Distance.*/
+ float voltage; /*< [V] Raw voltage if available, zero otherwise.*/
+} mavlink_rangefinder_t;
 
 #define MAVLINK_MSG_ID_RANGEFINDER_LEN 8
 #define MAVLINK_MSG_ID_RANGEFINDER_MIN_LEN 8
@@ -44,8 +46,8 @@ typedef struct __mavlink_rangefinder_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param distance distance in meters
- * @param voltage raw voltage if available, zero otherwise
+ * @param distance [m] Distance.
+ * @param voltage [V] Raw voltage if available, zero otherwise.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_rangefinder_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -70,13 +72,49 @@ static inline uint16_t mavlink_msg_rangefinder_pack(uint8_t system_id, uint8_t c
 }
 
 /**
+ * @brief Pack a rangefinder message
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ *
+ * @param distance [m] Distance.
+ * @param voltage [V] Raw voltage if available, zero otherwise.
+ * @return length of the message in bytes (excluding serial stream start sign)
+ */
+static inline uint16_t mavlink_msg_rangefinder_pack_status(uint8_t system_id, uint8_t component_id, mavlink_status_t *_status, mavlink_message_t* msg,
+                               float distance, float voltage)
+{
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    char buf[MAVLINK_MSG_ID_RANGEFINDER_LEN];
+    _mav_put_float(buf, 0, distance);
+    _mav_put_float(buf, 4, voltage);
+
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_RANGEFINDER_LEN);
+#else
+    mavlink_rangefinder_t packet;
+    packet.distance = distance;
+    packet.voltage = voltage;
+
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_RANGEFINDER_LEN);
+#endif
+
+    msg->msgid = MAVLINK_MSG_ID_RANGEFINDER;
+#if MAVLINK_CRC_EXTRA
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_RANGEFINDER_MIN_LEN, MAVLINK_MSG_ID_RANGEFINDER_LEN, MAVLINK_MSG_ID_RANGEFINDER_CRC);
+#else
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_RANGEFINDER_MIN_LEN, MAVLINK_MSG_ID_RANGEFINDER_LEN);
+#endif
+}
+
+/**
  * @brief Pack a rangefinder message on a channel
  * @param system_id ID of this system
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param distance distance in meters
- * @param voltage raw voltage if available, zero otherwise
+ * @param distance [m] Distance.
+ * @param voltage [V] Raw voltage if available, zero otherwise.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_rangefinder_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -129,11 +167,25 @@ static inline uint16_t mavlink_msg_rangefinder_encode_chan(uint8_t system_id, ui
 }
 
 /**
+ * @brief Encode a rangefinder struct with provided status structure
+ *
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ * @param rangefinder C-struct to read the message contents from
+ */
+static inline uint16_t mavlink_msg_rangefinder_encode_status(uint8_t system_id, uint8_t component_id, mavlink_status_t* _status, mavlink_message_t* msg, const mavlink_rangefinder_t* rangefinder)
+{
+    return mavlink_msg_rangefinder_pack_status(system_id, component_id, _status, msg,  rangefinder->distance, rangefinder->voltage);
+}
+
+/**
  * @brief Send a rangefinder message
  * @param chan MAVLink channel to send the message
  *
- * @param distance distance in meters
- * @param voltage raw voltage if available, zero otherwise
+ * @param distance [m] Distance.
+ * @param voltage [V] Raw voltage if available, zero otherwise.
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -170,7 +222,7 @@ static inline void mavlink_msg_rangefinder_send_struct(mavlink_channel_t chan, c
 
 #if MAVLINK_MSG_ID_RANGEFINDER_LEN <= MAVLINK_MAX_PAYLOAD_LEN
 /*
-  This varient of _send() can be used to save stack space by re-using
+  This variant of _send() can be used to save stack space by reusing
   memory from the receive buffer.  The caller provides a
   mavlink_message_t which is the size of a full mavlink message. This
   is usually the receive buffer for the channel, and allows a reply to an
@@ -202,7 +254,7 @@ static inline void mavlink_msg_rangefinder_send_buf(mavlink_message_t *msgbuf, m
 /**
  * @brief Get field distance from rangefinder message
  *
- * @return distance in meters
+ * @return [m] Distance.
  */
 static inline float mavlink_msg_rangefinder_get_distance(const mavlink_message_t* msg)
 {
@@ -212,7 +264,7 @@ static inline float mavlink_msg_rangefinder_get_distance(const mavlink_message_t
 /**
  * @brief Get field voltage from rangefinder message
  *
- * @return raw voltage if available, zero otherwise
+ * @return [V] Raw voltage if available, zero otherwise.
  */
 static inline float mavlink_msg_rangefinder_get_voltage(const mavlink_message_t* msg)
 {

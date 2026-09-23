@@ -1,24 +1,26 @@
 #pragma once
 // MESSAGE ADAP_TUNING PACKING
 
+#include <stdint.h>
+
 #define MAVLINK_MSG_ID_ADAP_TUNING 11010
 
-MAVPACKED(
+
 typedef struct __mavlink_adap_tuning_t {
- float desired; /*< desired rate (degrees/s)*/
- float achieved; /*< achieved rate (degrees/s)*/
- float error; /*< error between model and vehicle*/
- float theta; /*< theta estimated state predictor*/
- float omega; /*< omega estimated state predictor*/
- float sigma; /*< sigma estimated state predictor*/
- float theta_dot; /*< theta derivative*/
- float omega_dot; /*< omega derivative*/
- float sigma_dot; /*< sigma derivative*/
- float f; /*< projection operator value*/
- float f_dot; /*< projection operator derivative*/
- float u; /*< u adaptive controlled output command*/
- uint8_t axis; /*< axis*/
-}) mavlink_adap_tuning_t;
+ float desired; /*< [deg/s] Desired rate.*/
+ float achieved; /*< [deg/s] Achieved rate.*/
+ float error; /*<  Error between model and vehicle.*/
+ float theta; /*<  Theta estimated state predictor.*/
+ float omega; /*<  Omega estimated state predictor.*/
+ float sigma; /*<  Sigma estimated state predictor.*/
+ float theta_dot; /*<  Theta derivative.*/
+ float omega_dot; /*<  Omega derivative.*/
+ float sigma_dot; /*<  Sigma derivative.*/
+ float f; /*<  Projection operator value.*/
+ float f_dot; /*<  Projection operator derivative.*/
+ float u; /*<  u adaptive controlled output command.*/
+ uint8_t axis; /*<  Axis.*/
+} mavlink_adap_tuning_t;
 
 #define MAVLINK_MSG_ID_ADAP_TUNING_LEN 49
 #define MAVLINK_MSG_ID_ADAP_TUNING_MIN_LEN 49
@@ -35,7 +37,8 @@ typedef struct __mavlink_adap_tuning_t {
     11010, \
     "ADAP_TUNING", \
     13, \
-    {  { "desired", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_adap_tuning_t, desired) }, \
+    {  { "axis", NULL, MAVLINK_TYPE_UINT8_T, 0, 48, offsetof(mavlink_adap_tuning_t, axis) }, \
+         { "desired", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_adap_tuning_t, desired) }, \
          { "achieved", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_adap_tuning_t, achieved) }, \
          { "error", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_adap_tuning_t, error) }, \
          { "theta", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_adap_tuning_t, theta) }, \
@@ -47,14 +50,14 @@ typedef struct __mavlink_adap_tuning_t {
          { "f", NULL, MAVLINK_TYPE_FLOAT, 0, 36, offsetof(mavlink_adap_tuning_t, f) }, \
          { "f_dot", NULL, MAVLINK_TYPE_FLOAT, 0, 40, offsetof(mavlink_adap_tuning_t, f_dot) }, \
          { "u", NULL, MAVLINK_TYPE_FLOAT, 0, 44, offsetof(mavlink_adap_tuning_t, u) }, \
-         { "axis", NULL, MAVLINK_TYPE_UINT8_T, 0, 48, offsetof(mavlink_adap_tuning_t, axis) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_ADAP_TUNING { \
     "ADAP_TUNING", \
     13, \
-    {  { "desired", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_adap_tuning_t, desired) }, \
+    {  { "axis", NULL, MAVLINK_TYPE_UINT8_T, 0, 48, offsetof(mavlink_adap_tuning_t, axis) }, \
+         { "desired", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_adap_tuning_t, desired) }, \
          { "achieved", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_adap_tuning_t, achieved) }, \
          { "error", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_adap_tuning_t, error) }, \
          { "theta", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_adap_tuning_t, theta) }, \
@@ -66,7 +69,6 @@ typedef struct __mavlink_adap_tuning_t {
          { "f", NULL, MAVLINK_TYPE_FLOAT, 0, 36, offsetof(mavlink_adap_tuning_t, f) }, \
          { "f_dot", NULL, MAVLINK_TYPE_FLOAT, 0, 40, offsetof(mavlink_adap_tuning_t, f_dot) }, \
          { "u", NULL, MAVLINK_TYPE_FLOAT, 0, 44, offsetof(mavlink_adap_tuning_t, u) }, \
-         { "axis", NULL, MAVLINK_TYPE_UINT8_T, 0, 48, offsetof(mavlink_adap_tuning_t, axis) }, \
          } \
 }
 #endif
@@ -77,19 +79,19 @@ typedef struct __mavlink_adap_tuning_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param axis axis
- * @param desired desired rate (degrees/s)
- * @param achieved achieved rate (degrees/s)
- * @param error error between model and vehicle
- * @param theta theta estimated state predictor
- * @param omega omega estimated state predictor
- * @param sigma sigma estimated state predictor
- * @param theta_dot theta derivative
- * @param omega_dot omega derivative
- * @param sigma_dot sigma derivative
- * @param f projection operator value
- * @param f_dot projection operator derivative
- * @param u u adaptive controlled output command
+ * @param axis  Axis.
+ * @param desired [deg/s] Desired rate.
+ * @param achieved [deg/s] Achieved rate.
+ * @param error  Error between model and vehicle.
+ * @param theta  Theta estimated state predictor.
+ * @param omega  Omega estimated state predictor.
+ * @param sigma  Sigma estimated state predictor.
+ * @param theta_dot  Theta derivative.
+ * @param omega_dot  Omega derivative.
+ * @param sigma_dot  Sigma derivative.
+ * @param f  Projection operator value.
+ * @param f_dot  Projection operator derivative.
+ * @param u  u adaptive controlled output command.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_adap_tuning_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -136,24 +138,93 @@ static inline uint16_t mavlink_msg_adap_tuning_pack(uint8_t system_id, uint8_t c
 }
 
 /**
+ * @brief Pack a adap_tuning message
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ *
+ * @param axis  Axis.
+ * @param desired [deg/s] Desired rate.
+ * @param achieved [deg/s] Achieved rate.
+ * @param error  Error between model and vehicle.
+ * @param theta  Theta estimated state predictor.
+ * @param omega  Omega estimated state predictor.
+ * @param sigma  Sigma estimated state predictor.
+ * @param theta_dot  Theta derivative.
+ * @param omega_dot  Omega derivative.
+ * @param sigma_dot  Sigma derivative.
+ * @param f  Projection operator value.
+ * @param f_dot  Projection operator derivative.
+ * @param u  u adaptive controlled output command.
+ * @return length of the message in bytes (excluding serial stream start sign)
+ */
+static inline uint16_t mavlink_msg_adap_tuning_pack_status(uint8_t system_id, uint8_t component_id, mavlink_status_t *_status, mavlink_message_t* msg,
+                               uint8_t axis, float desired, float achieved, float error, float theta, float omega, float sigma, float theta_dot, float omega_dot, float sigma_dot, float f, float f_dot, float u)
+{
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    char buf[MAVLINK_MSG_ID_ADAP_TUNING_LEN];
+    _mav_put_float(buf, 0, desired);
+    _mav_put_float(buf, 4, achieved);
+    _mav_put_float(buf, 8, error);
+    _mav_put_float(buf, 12, theta);
+    _mav_put_float(buf, 16, omega);
+    _mav_put_float(buf, 20, sigma);
+    _mav_put_float(buf, 24, theta_dot);
+    _mav_put_float(buf, 28, omega_dot);
+    _mav_put_float(buf, 32, sigma_dot);
+    _mav_put_float(buf, 36, f);
+    _mav_put_float(buf, 40, f_dot);
+    _mav_put_float(buf, 44, u);
+    _mav_put_uint8_t(buf, 48, axis);
+
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_ADAP_TUNING_LEN);
+#else
+    mavlink_adap_tuning_t packet;
+    packet.desired = desired;
+    packet.achieved = achieved;
+    packet.error = error;
+    packet.theta = theta;
+    packet.omega = omega;
+    packet.sigma = sigma;
+    packet.theta_dot = theta_dot;
+    packet.omega_dot = omega_dot;
+    packet.sigma_dot = sigma_dot;
+    packet.f = f;
+    packet.f_dot = f_dot;
+    packet.u = u;
+    packet.axis = axis;
+
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_ADAP_TUNING_LEN);
+#endif
+
+    msg->msgid = MAVLINK_MSG_ID_ADAP_TUNING;
+#if MAVLINK_CRC_EXTRA
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_ADAP_TUNING_MIN_LEN, MAVLINK_MSG_ID_ADAP_TUNING_LEN, MAVLINK_MSG_ID_ADAP_TUNING_CRC);
+#else
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_ADAP_TUNING_MIN_LEN, MAVLINK_MSG_ID_ADAP_TUNING_LEN);
+#endif
+}
+
+/**
  * @brief Pack a adap_tuning message on a channel
  * @param system_id ID of this system
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param axis axis
- * @param desired desired rate (degrees/s)
- * @param achieved achieved rate (degrees/s)
- * @param error error between model and vehicle
- * @param theta theta estimated state predictor
- * @param omega omega estimated state predictor
- * @param sigma sigma estimated state predictor
- * @param theta_dot theta derivative
- * @param omega_dot omega derivative
- * @param sigma_dot sigma derivative
- * @param f projection operator value
- * @param f_dot projection operator derivative
- * @param u u adaptive controlled output command
+ * @param axis  Axis.
+ * @param desired [deg/s] Desired rate.
+ * @param achieved [deg/s] Achieved rate.
+ * @param error  Error between model and vehicle.
+ * @param theta  Theta estimated state predictor.
+ * @param omega  Omega estimated state predictor.
+ * @param sigma  Sigma estimated state predictor.
+ * @param theta_dot  Theta derivative.
+ * @param omega_dot  Omega derivative.
+ * @param sigma_dot  Sigma derivative.
+ * @param f  Projection operator value.
+ * @param f_dot  Projection operator derivative.
+ * @param u  u adaptive controlled output command.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_adap_tuning_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -228,22 +299,36 @@ static inline uint16_t mavlink_msg_adap_tuning_encode_chan(uint8_t system_id, ui
 }
 
 /**
+ * @brief Encode a adap_tuning struct with provided status structure
+ *
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ * @param adap_tuning C-struct to read the message contents from
+ */
+static inline uint16_t mavlink_msg_adap_tuning_encode_status(uint8_t system_id, uint8_t component_id, mavlink_status_t* _status, mavlink_message_t* msg, const mavlink_adap_tuning_t* adap_tuning)
+{
+    return mavlink_msg_adap_tuning_pack_status(system_id, component_id, _status, msg,  adap_tuning->axis, adap_tuning->desired, adap_tuning->achieved, adap_tuning->error, adap_tuning->theta, adap_tuning->omega, adap_tuning->sigma, adap_tuning->theta_dot, adap_tuning->omega_dot, adap_tuning->sigma_dot, adap_tuning->f, adap_tuning->f_dot, adap_tuning->u);
+}
+
+/**
  * @brief Send a adap_tuning message
  * @param chan MAVLink channel to send the message
  *
- * @param axis axis
- * @param desired desired rate (degrees/s)
- * @param achieved achieved rate (degrees/s)
- * @param error error between model and vehicle
- * @param theta theta estimated state predictor
- * @param omega omega estimated state predictor
- * @param sigma sigma estimated state predictor
- * @param theta_dot theta derivative
- * @param omega_dot omega derivative
- * @param sigma_dot sigma derivative
- * @param f projection operator value
- * @param f_dot projection operator derivative
- * @param u u adaptive controlled output command
+ * @param axis  Axis.
+ * @param desired [deg/s] Desired rate.
+ * @param achieved [deg/s] Achieved rate.
+ * @param error  Error between model and vehicle.
+ * @param theta  Theta estimated state predictor.
+ * @param omega  Omega estimated state predictor.
+ * @param sigma  Sigma estimated state predictor.
+ * @param theta_dot  Theta derivative.
+ * @param omega_dot  Omega derivative.
+ * @param sigma_dot  Sigma derivative.
+ * @param f  Projection operator value.
+ * @param f_dot  Projection operator derivative.
+ * @param u  u adaptive controlled output command.
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -302,7 +387,7 @@ static inline void mavlink_msg_adap_tuning_send_struct(mavlink_channel_t chan, c
 
 #if MAVLINK_MSG_ID_ADAP_TUNING_LEN <= MAVLINK_MAX_PAYLOAD_LEN
 /*
-  This varient of _send() can be used to save stack space by re-using
+  This variant of _send() can be used to save stack space by reusing
   memory from the receive buffer.  The caller provides a
   mavlink_message_t which is the size of a full mavlink message. This
   is usually the receive buffer for the channel, and allows a reply to an
@@ -356,7 +441,7 @@ static inline void mavlink_msg_adap_tuning_send_buf(mavlink_message_t *msgbuf, m
 /**
  * @brief Get field axis from adap_tuning message
  *
- * @return axis
+ * @return  Axis.
  */
 static inline uint8_t mavlink_msg_adap_tuning_get_axis(const mavlink_message_t* msg)
 {
@@ -366,7 +451,7 @@ static inline uint8_t mavlink_msg_adap_tuning_get_axis(const mavlink_message_t* 
 /**
  * @brief Get field desired from adap_tuning message
  *
- * @return desired rate (degrees/s)
+ * @return [deg/s] Desired rate.
  */
 static inline float mavlink_msg_adap_tuning_get_desired(const mavlink_message_t* msg)
 {
@@ -376,7 +461,7 @@ static inline float mavlink_msg_adap_tuning_get_desired(const mavlink_message_t*
 /**
  * @brief Get field achieved from adap_tuning message
  *
- * @return achieved rate (degrees/s)
+ * @return [deg/s] Achieved rate.
  */
 static inline float mavlink_msg_adap_tuning_get_achieved(const mavlink_message_t* msg)
 {
@@ -386,7 +471,7 @@ static inline float mavlink_msg_adap_tuning_get_achieved(const mavlink_message_t
 /**
  * @brief Get field error from adap_tuning message
  *
- * @return error between model and vehicle
+ * @return  Error between model and vehicle.
  */
 static inline float mavlink_msg_adap_tuning_get_error(const mavlink_message_t* msg)
 {
@@ -396,7 +481,7 @@ static inline float mavlink_msg_adap_tuning_get_error(const mavlink_message_t* m
 /**
  * @brief Get field theta from adap_tuning message
  *
- * @return theta estimated state predictor
+ * @return  Theta estimated state predictor.
  */
 static inline float mavlink_msg_adap_tuning_get_theta(const mavlink_message_t* msg)
 {
@@ -406,7 +491,7 @@ static inline float mavlink_msg_adap_tuning_get_theta(const mavlink_message_t* m
 /**
  * @brief Get field omega from adap_tuning message
  *
- * @return omega estimated state predictor
+ * @return  Omega estimated state predictor.
  */
 static inline float mavlink_msg_adap_tuning_get_omega(const mavlink_message_t* msg)
 {
@@ -416,7 +501,7 @@ static inline float mavlink_msg_adap_tuning_get_omega(const mavlink_message_t* m
 /**
  * @brief Get field sigma from adap_tuning message
  *
- * @return sigma estimated state predictor
+ * @return  Sigma estimated state predictor.
  */
 static inline float mavlink_msg_adap_tuning_get_sigma(const mavlink_message_t* msg)
 {
@@ -426,7 +511,7 @@ static inline float mavlink_msg_adap_tuning_get_sigma(const mavlink_message_t* m
 /**
  * @brief Get field theta_dot from adap_tuning message
  *
- * @return theta derivative
+ * @return  Theta derivative.
  */
 static inline float mavlink_msg_adap_tuning_get_theta_dot(const mavlink_message_t* msg)
 {
@@ -436,7 +521,7 @@ static inline float mavlink_msg_adap_tuning_get_theta_dot(const mavlink_message_
 /**
  * @brief Get field omega_dot from adap_tuning message
  *
- * @return omega derivative
+ * @return  Omega derivative.
  */
 static inline float mavlink_msg_adap_tuning_get_omega_dot(const mavlink_message_t* msg)
 {
@@ -446,7 +531,7 @@ static inline float mavlink_msg_adap_tuning_get_omega_dot(const mavlink_message_
 /**
  * @brief Get field sigma_dot from adap_tuning message
  *
- * @return sigma derivative
+ * @return  Sigma derivative.
  */
 static inline float mavlink_msg_adap_tuning_get_sigma_dot(const mavlink_message_t* msg)
 {
@@ -456,7 +541,7 @@ static inline float mavlink_msg_adap_tuning_get_sigma_dot(const mavlink_message_
 /**
  * @brief Get field f from adap_tuning message
  *
- * @return projection operator value
+ * @return  Projection operator value.
  */
 static inline float mavlink_msg_adap_tuning_get_f(const mavlink_message_t* msg)
 {
@@ -466,7 +551,7 @@ static inline float mavlink_msg_adap_tuning_get_f(const mavlink_message_t* msg)
 /**
  * @brief Get field f_dot from adap_tuning message
  *
- * @return projection operator derivative
+ * @return  Projection operator derivative.
  */
 static inline float mavlink_msg_adap_tuning_get_f_dot(const mavlink_message_t* msg)
 {
@@ -476,7 +561,7 @@ static inline float mavlink_msg_adap_tuning_get_f_dot(const mavlink_message_t* m
 /**
  * @brief Get field u from adap_tuning message
  *
- * @return u adaptive controlled output command
+ * @return  u adaptive controlled output command.
  */
 static inline float mavlink_msg_adap_tuning_get_u(const mavlink_message_t* msg)
 {

@@ -1,12 +1,14 @@
 #pragma once
 // MESSAGE UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT PACKING
 
+#include <stdint.h>
+
 #define MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT 10003
 
-MAVPACKED(
+
 typedef struct __mavlink_uavionix_adsb_transceiver_health_report_t {
- uint8_t rfHealth; /*< ADS-B transponder messages*/
-}) mavlink_uavionix_adsb_transceiver_health_report_t;
+ uint8_t rfHealth; /*<  ADS-B transponder messages*/
+} mavlink_uavionix_adsb_transceiver_health_report_t;
 
 #define MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT_LEN 1
 #define MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT_MIN_LEN 1
@@ -41,7 +43,7 @@ typedef struct __mavlink_uavionix_adsb_transceiver_health_report_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param rfHealth ADS-B transponder messages
+ * @param rfHealth  ADS-B transponder messages
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_uavionix_adsb_transceiver_health_report_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -64,12 +66,45 @@ static inline uint16_t mavlink_msg_uavionix_adsb_transceiver_health_report_pack(
 }
 
 /**
+ * @brief Pack a uavionix_adsb_transceiver_health_report message
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ *
+ * @param rfHealth  ADS-B transponder messages
+ * @return length of the message in bytes (excluding serial stream start sign)
+ */
+static inline uint16_t mavlink_msg_uavionix_adsb_transceiver_health_report_pack_status(uint8_t system_id, uint8_t component_id, mavlink_status_t *_status, mavlink_message_t* msg,
+                               uint8_t rfHealth)
+{
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    char buf[MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT_LEN];
+    _mav_put_uint8_t(buf, 0, rfHealth);
+
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT_LEN);
+#else
+    mavlink_uavionix_adsb_transceiver_health_report_t packet;
+    packet.rfHealth = rfHealth;
+
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT_LEN);
+#endif
+
+    msg->msgid = MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT;
+#if MAVLINK_CRC_EXTRA
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT_MIN_LEN, MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT_LEN, MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT_CRC);
+#else
+    return mavlink_finalize_message_buffer(msg, system_id, component_id, _status, MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT_MIN_LEN, MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT_LEN);
+#endif
+}
+
+/**
  * @brief Pack a uavionix_adsb_transceiver_health_report message on a channel
  * @param system_id ID of this system
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param rfHealth ADS-B transponder messages
+ * @param rfHealth  ADS-B transponder messages
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_uavionix_adsb_transceiver_health_report_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -120,10 +155,24 @@ static inline uint16_t mavlink_msg_uavionix_adsb_transceiver_health_report_encod
 }
 
 /**
+ * @brief Encode a uavionix_adsb_transceiver_health_report struct with provided status structure
+ *
+ * @param system_id ID of this system
+ * @param component_id ID of this component (e.g. 200 for IMU)
+ * @param status MAVLink status structure
+ * @param msg The MAVLink message to compress the data into
+ * @param uavionix_adsb_transceiver_health_report C-struct to read the message contents from
+ */
+static inline uint16_t mavlink_msg_uavionix_adsb_transceiver_health_report_encode_status(uint8_t system_id, uint8_t component_id, mavlink_status_t* _status, mavlink_message_t* msg, const mavlink_uavionix_adsb_transceiver_health_report_t* uavionix_adsb_transceiver_health_report)
+{
+    return mavlink_msg_uavionix_adsb_transceiver_health_report_pack_status(system_id, component_id, _status, msg,  uavionix_adsb_transceiver_health_report->rfHealth);
+}
+
+/**
  * @brief Send a uavionix_adsb_transceiver_health_report message
  * @param chan MAVLink channel to send the message
  *
- * @param rfHealth ADS-B transponder messages
+ * @param rfHealth  ADS-B transponder messages
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -158,7 +207,7 @@ static inline void mavlink_msg_uavionix_adsb_transceiver_health_report_send_stru
 
 #if MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT_LEN <= MAVLINK_MAX_PAYLOAD_LEN
 /*
-  This varient of _send() can be used to save stack space by re-using
+  This variant of _send() can be used to save stack space by reusing
   memory from the receive buffer.  The caller provides a
   mavlink_message_t which is the size of a full mavlink message. This
   is usually the receive buffer for the channel, and allows a reply to an
@@ -188,7 +237,7 @@ static inline void mavlink_msg_uavionix_adsb_transceiver_health_report_send_buf(
 /**
  * @brief Get field rfHealth from uavionix_adsb_transceiver_health_report message
  *
- * @return ADS-B transponder messages
+ * @return  ADS-B transponder messages
  */
 static inline uint8_t mavlink_msg_uavionix_adsb_transceiver_health_report_get_rfHealth(const mavlink_message_t* msg)
 {

@@ -68,7 +68,7 @@ typedef struct param_union {
  * The intention is that by replacing the is_double bit with 0 the type can be directly used as a double (as the is_double bit corresponds to the
  * lowest mantissa bit of a double). If is_double is 0 then mavlink_type gives the type in the union.
  * The mavlink_types.h header will also need to have shifts/masks to define the bit boundaries in the above,
- * as bitfield ordering isn’t consistent between platforms. The above is intended to be for gcc on x86,
+ * as bitfield ordering isn't consistent between platforms. The above is intended to be for gcc on x86,
  * which should be the same as gcc on little-endian arm. When using shifts/masks the value will be treated as a 64 bit unsigned number,
  * and the bits pulled out using the shifts/masks.
 */
@@ -161,12 +161,14 @@ typedef struct __mavlink_message_info {
 #define mavlink_ck_a(msg) *((msg)->len + (uint8_t *)_MAV_PAYLOAD_NON_CONST(msg))
 #define mavlink_ck_b(msg) *(((msg)->len+(uint16_t)1) + (uint8_t *)_MAV_PAYLOAD_NON_CONST(msg))
 
+#ifndef HAVE_MAVLINK_CHANNEL_T
 typedef enum {
     MAVLINK_COMM_0,
     MAVLINK_COMM_1,
     MAVLINK_COMM_2,
     MAVLINK_COMM_3
 } mavlink_channel_t;
+#endif
 
 /*
  * applications can set MAVLINK_COMM_NUM_BUFFERS to the maximum number
@@ -197,7 +199,8 @@ typedef enum {
     MAVLINK_PARSE_STATE_GOT_PAYLOAD,
     MAVLINK_PARSE_STATE_GOT_CRC1,
     MAVLINK_PARSE_STATE_GOT_BAD_CRC1,
-    MAVLINK_PARSE_STATE_SIGNATURE_WAIT
+    MAVLINK_PARSE_STATE_SIGNATURE_WAIT,
+    MAVLINK_PARSE_STATE_SIGNATURE_WAIT_BAD_CRC
 } mavlink_parse_state_t; ///< The state machine for the comm parser
 
 typedef enum {
@@ -238,17 +241,28 @@ typedef bool (*mavlink_accept_unsigned_t)(const mavlink_status_t *status, uint32
 /*
   flags controlling signing
  */
-#define MAVLINK_SIGNING_FLAG_SIGN_OUTGOING 1
+#define MAVLINK_SIGNING_FLAG_SIGN_OUTGOING 1    ///< Enable outgoing signing
 
+typedef enum {
+    MAVLINK_SIGNING_STATUS_NONE=0,
+    MAVLINK_SIGNING_STATUS_OK=1,
+    MAVLINK_SIGNING_STATUS_BAD_SIGNATURE=2,
+    MAVLINK_SIGNING_STATUS_NO_STREAMS=3,
+    MAVLINK_SIGNING_STATUS_TOO_MANY_STREAMS=4,
+    MAVLINK_SIGNING_STATUS_OLD_TIMESTAMP=5,
+    MAVLINK_SIGNING_STATUS_REPLAY=6,
+} mavlink_signing_status_t;
+    
 /*
   state of MAVLink signing for this channel
  */
 typedef struct __mavlink_signing {
     uint8_t flags;                     ///< MAVLINK_SIGNING_FLAG_*
-    uint8_t link_id;
-    uint64_t timestamp;
+    uint8_t link_id;                   ///< Same as MAVLINK_CHANNEL
+    uint64_t timestamp;                ///< Timestamp, in microseconds since UNIX epoch GMT
     uint8_t secret_key[32];
     mavlink_accept_unsigned_t accept_unsigned_callback;
+    mavlink_signing_status_t last_status;
 } mavlink_signing_t;
 
 /*
@@ -261,10 +275,10 @@ typedef struct __mavlink_signing {
 typedef struct __mavlink_signing_streams {
     uint16_t num_signing_streams;
     struct __mavlink_signing_stream {
-        uint8_t link_id;
-        uint8_t sysid;
-        uint8_t compid;
-        uint8_t timestamp_bytes[6];
+        uint8_t link_id;              ///< ID of the link (MAVLINK_CHANNEL)
+        uint8_t sysid;                ///< Remote system ID
+        uint8_t compid;               ///< Remote component ID
+        uint8_t timestamp_bytes[6];   ///< Timestamp, in microseconds since UNIX epoch GMT
     } stream[MAVLINK_MAX_SIGNING_STREAMS];
 } mavlink_signing_streams_t;
 
@@ -281,8 +295,9 @@ typedef struct __mavlink_signing_streams {
 typedef struct __mavlink_msg_entry {
 	uint32_t msgid;
 	uint8_t crc_extra;
-	uint8_t msg_len;
-	uint8_t flags;             // MAV_MSG_ENTRY_FLAG_*
+        uint8_t min_msg_len;       // minimum message length
+        uint8_t max_msg_len;       // maximum message length (e.g. including mavlink2 extensions)
+        uint8_t flags;             // MAV_MSG_ENTRY_FLAG_*
 	uint8_t target_system_ofs; // payload offset to target_system, or 0
 	uint8_t target_component_ofs; // payload offset to target_component, or 0
 } mavlink_msg_entry_t;
